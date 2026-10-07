@@ -1,0 +1,6 @@
+{
+  "name": "BaggageTrack - Airport Baggage Tracking System",
+  "description": "Real-time airport baggage tracking system for passengers and operations staff with status updates and incident management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
