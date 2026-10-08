@@ -1,10 +1,9 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import authRoutes from './routes/authRoutes.ts';
 import baggageRoutes from './routes/baggageRoutes.ts';
 import incidentRoutes from './routes/incidentRoutes.ts';
 import { getPassengerDashboardHandler } from './controllers/baggageController.ts';
-import { errorHandler } from './middleware/errorMiddleware.ts';
 
 export function createApp() {
   const app = express();
@@ -13,7 +12,7 @@ export function createApp() {
   app.use(express.json());
 
   // Health check
-  app.get('/api/health', (req, res) => {
+  app.get('/api/health', (req: Request, res: Response) => {
     res.json({ status: 'ok', service: 'BaggageTrack API', timestamp: new Date().toISOString() });
   });
 
@@ -24,7 +23,11 @@ export function createApp() {
   app.get('/api/passenger/dashboard', getPassengerDashboardHandler);
 
   // Centralized Error Handling
-  app.use(errorHandler);
+  app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+    console.error('API Error:', err);
+    const status = err.status || err.statusCode || 500;
+    res.status(status).json({ message: err.message || 'Internal server error.' });
+  });
 
   return app;
 }

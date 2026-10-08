@@ -2,17 +2,14 @@ import { Router } from 'express';
 import {
   getBaggageByTagHandler,
   getAllBaggageHandler,
-  getStatisticsHandler
-} from '../controllers/baggageController.ts';
-import {
+  getStatisticsHandler,
   getMovementsHandler,
   addMovementHandler
-} from '../controllers/movementController.ts';
-import { requireStaff } from '../middleware/authMiddleware.ts';
+} from '../controllers/baggageController.ts';
 
 const router = Router();
 
-// Staff statistics - mounted before /:tagNumber
+// Staff statistics
 router.get('/statistics', getStatisticsHandler);
 
 // Staff list of baggage
