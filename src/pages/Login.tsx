@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Plane, Mail, Lock, ArrowRight, ShieldCheck, User } from 'lucide-react';
+import { Plane, Mail, Lock, ArrowRight, ShieldCheck, User, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext.tsx';
 import { Button } from '../components/common/Button.tsx';
 import { Input } from '../components/common/Input.tsx';
 import { Alert } from '../components/common/Toast.tsx';
 
 export const Login: React.FC = () => {
-  const [email, setEmail] = useState('passenger@baggagetrack.com');
+  const [email, setEmail] = useState('godwin@baggagetrack.com');
   const [password, setPassword] = useState('passenger123');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -21,12 +21,19 @@ export const Login: React.FC = () => {
     setActiveTab(tab);
     setError('');
     if (tab === 'PASSENGER') {
-      setEmail('passenger@baggagetrack.com');
+      setEmail('godwin@baggagetrack.com');
       setPassword('passenger123');
     } else {
-      setEmail('staff@baggagetrack.com');
+      setEmail('anu@baggagetrack.com');
       setPassword('staff123');
     }
+  };
+
+  const populateCreds = (demoEmail: string, demoPass: string, role: 'PASSENGER' | 'STAFF') => {
+    setActiveTab(role);
+    setEmail(demoEmail);
+    setPassword(demoPass);
+    setError('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -88,7 +95,7 @@ export const Login: React.FC = () => {
             }`}
           >
             <User className="w-3.5 h-3.5" />
-            <span>Passenger</span>
+            <span>Passenger (Godwin)</span>
           </button>
           <button
             type="button"
@@ -100,7 +107,7 @@ export const Login: React.FC = () => {
             }`}
           >
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Airport Staff</span>
+            <span>Airport Staff (Anu / Gauthami)</span>
           </button>
         </div>
 
@@ -160,14 +167,49 @@ export const Login: React.FC = () => {
 
           {/* Quick Demo Credentials Footer */}
           <div className="mt-6 pt-5 border-t border-slate-100 text-xs text-slate-500">
-            <p className="font-semibold text-slate-700 mb-1.5">Preset Demo Credentials:</p>
-            <div className="space-y-1 text-2xs font-mono text-slate-600 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-              <div>
-                <span className="font-bold text-slate-800">Staff:</span> staff@baggagetrack.com / staff123
-              </div>
-              <div>
-                <span className="font-bold text-slate-800">Passenger:</span> passenger@baggagetrack.com / passenger123
-              </div>
+            <p className="font-semibold text-slate-700 mb-2 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-blue-600" />
+              <span>One-Click Demo Credentials:</span>
+            </p>
+            <div className="space-y-2">
+              {/* Godwin (Passenger) */}
+              <button
+                type="button"
+                onClick={() => populateCreds('godwin@baggagetrack.com', 'passenger123', 'PASSENGER')}
+                className="w-full text-left p-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50/60 hover:border-blue-200 transition-colors flex items-center justify-between cursor-pointer"
+              >
+                <div>
+                  <div className="font-bold text-slate-800 text-xs">Passenger: Godwin</div>
+                  <div className="text-2xs text-slate-500 font-mono">godwin@baggagetrack.com</div>
+                </div>
+                <span className="text-2xs font-semibold bg-blue-100 text-blue-700 px-2 py-0.5 rounded">Fill</span>
+              </button>
+
+              {/* Anu (Staff) */}
+              <button
+                type="button"
+                onClick={() => populateCreds('anu@baggagetrack.com', 'staff123', 'STAFF')}
+                className="w-full text-left p-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-emerald-50/60 hover:border-emerald-200 transition-colors flex items-center justify-between cursor-pointer"
+              >
+                <div>
+                  <div className="font-bold text-slate-800 text-xs">Staff: Anu</div>
+                  <div className="text-2xs text-slate-500 font-mono">anu@baggagetrack.com</div>
+                </div>
+                <span className="text-2xs font-semibold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">Fill</span>
+              </button>
+
+              {/* Gauthami (Staff) */}
+              <button
+                type="button"
+                onClick={() => populateCreds('gauthami@baggagetrack.com', 'staff123', 'STAFF')}
+                className="w-full text-left p-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-emerald-50/60 hover:border-emerald-200 transition-colors flex items-center justify-between cursor-pointer"
+              >
+                <div>
+                  <div className="font-bold text-slate-800 text-xs">Staff: Gauthami</div>
+                  <div className="text-2xs text-slate-500 font-mono">gauthami@baggagetrack.com</div>
+                </div>
+                <span className="text-2xs font-semibold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">Fill</span>
+              </button>
             </div>
           </div>
         </div>

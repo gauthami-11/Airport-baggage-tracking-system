@@ -6,12 +6,15 @@ USE baggage_tracking;
 
 -- 1. USERS
 -- Passwords:
--- staff@baggagetrack.com -> staff123 ($2a$10$7vU0o3u5q0U6w30tD8V8seU40m7vMsqUoI4o7JvQy1dYw5tN.h2C2)
--- passenger@baggagetrack.com -> passenger123 ($2a$10$bIek6j2X4jPjO/vU8yX5yeEcfiI12RkY.bI0p5pXy1hS0hL1.9yvO)
+-- Staff (Anu & Gauthami): staff123 ($2a$10$7vU0o3u5q0U6w30tD8V8seU40m7vMsqUoI4o7JvQy1dYw5tN.h2C2)
+-- Passenger (Godwin): passenger123 ($2a$10$bIek6j2X4jPjO/vU8yX5yeEcfiI12RkY.bI0p5pXy1hS0hL1.9yvO)
 INSERT INTO users (id, name, email, password_hash, role) VALUES
-(1, 'Airport Operations Staff', 'staff@baggagetrack.com', '$2a$10$7vU0o3u5q0U6w30tD8V8seU40m7vMsqUoI4o7JvQy1dYw5tN.h2C2', 'STAFF'),
-(2, 'Rahul Sharma', 'passenger@baggagetrack.com', '$2a$10$bIek6j2X4jPjO/vU8yX5yeEcfiI12RkY.bI0p5pXy1hS0hL1.9yvO', 'PASSENGER'),
-(3, 'Priya Patel', 'priya.patel@example.com', '$2a$10$bIek6j2X4jPjO/vU8yX5yeEcfiI12RkY.bI0p5pXy1hS0hL1.9yvO', 'PASSENGER');
+(1, 'Anu', 'anu@baggagetrack.com', '$2a$10$7vU0o3u5q0U6w30tD8V8seU40m7vMsqUoI4o7JvQy1dYw5tN.h2C2', 'STAFF'),
+(2, 'Gauthami', 'gauthami@baggagetrack.com', '$2a$10$7vU0o3u5q0U6w30tD8V8seU40m7vMsqUoI4o7JvQy1dYw5tN.h2C2', 'STAFF'),
+(3, 'Godwin', 'godwin@baggagetrack.com', '$2a$10$bIek6j2X4jPjO/vU8yX5yeEcfiI12RkY.bI0p5pXy1hS0hL1.9yvO', 'PASSENGER'),
+(4, 'Priya Patel', 'priya.patel@example.com', '$2a$10$bIek6j2X4jPjO/vU8yX5yeEcfiI12RkY.bI0p5pXy1hS0hL1.9yvO', 'PASSENGER'),
+(5, 'Airport Operations Staff', 'staff@baggagetrack.com', '$2a$10$7vU0o3u5q0U6w30tD8V8seU40m7vMsqUoI4o7JvQy1dYw5tN.h2C2', 'STAFF'),
+(6, 'Passenger Demo', 'passenger@baggagetrack.com', '$2a$10$bIek6j2X4jPjO/vU8yX5yeEcfiI12RkY.bI0p5pXy1hS0hL1.9yvO', 'PASSENGER');
 
 -- 2. FLIGHTS
 INSERT INTO flights (id, flight_number, origin, destination, departure_time, arrival_time, status) VALUES
@@ -21,14 +24,17 @@ INSERT INTO flights (id, flight_number, origin, destination, departure_time, arr
 
 -- 3. BAGGAGE
 INSERT INTO baggage (id, tag_number, flight_id, passenger_id, weight, status, current_location, updated_at) VALUES
-(1, 'BG10001', 1, 2, 18.50, 'IN TRANSIT', 'Delhi Airport', NOW()),
-(2, 'BG10002', 1, 2, 21.20, 'ARRIVED', 'Delhi Airport', NOW()),
-(3, 'BG10003', 2, 3, 16.80, 'DELAYED', 'Mumbai Airport', NOW()),
-(4, 'BG10004', 3, 2, 19.10, 'CLAIMED', 'Delhi Airport', NOW());
+(1, 'BG10001', 1, 3, 18.50, 'IN TRANSIT', 'Delhi Airport', NOW()),
+(2, 'BG10002', 1, 3, 21.20, 'ARRIVED', 'Delhi Airport', NOW()),
+(3, 'BG10003', 2, 4, 16.80, 'DELAYED', 'Mumbai Airport', NOW()),
+(4, 'BG10004', 3, 3, 19.10, 'CLAIMED', 'Delhi Airport', NOW()),
+(5, 'BG10005', 1, 3, 22.00, 'LOADED', 'Delhi Airport', NOW()),
+(6, 'BG10006', 2, 4, 14.50, 'CHECKED IN', 'Mumbai Airport', NOW()),
+(7, 'BG10007', 3, 4, 17.30, 'MISSING', 'Delhi Airport', NOW());
 
 -- 4. BAGGAGE MOVEMENTS (Tracking History for BG10001)
 INSERT INTO baggage_movements (baggage_id, timestamp, status, location, remarks) VALUES
-(1, '08:30', 'CHECKED IN', 'Delhi Airport', 'Checked in at Terminal 3 Counter B12'),
+(1, '08:30', 'CHECKED IN', 'Delhi Airport', 'Checked in at Terminal 3 Counter B12 by Godwin'),
 (1, '08:42', 'SECURITY', 'Delhi Airport', 'Security screening passed at Inspection Bay 4'),
 (1, '08:55', 'SORTED', 'Delhi Airport', 'Automated sorting completed to Cart 14'),
 (1, '09:20', 'LOADED', 'Delhi Airport', 'Loaded into Boeing 777 cargo hold door 2'),
@@ -60,4 +66,4 @@ INSERT INTO baggage_movements (baggage_id, timestamp, status, location, remarks)
 -- 5. INCIDENTS
 INSERT INTO incidents (id, baggage_id, reported_by, type, description, status) VALUES
 (1, 1, 1, 'DAMAGED BAGGAGE', 'Minor scratch and zipper tear reported on outer pocket', 'OPEN'),
-(2, 3, 1, 'DELAYED', 'Baggage missed connection transfer due to tight turnaround', 'INVESTIGATING');
+(2, 3, 2, 'DELAYED', 'Baggage did not arrive with flight AI405 due to tight turnaround', 'INVESTIGATING');

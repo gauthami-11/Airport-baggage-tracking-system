@@ -34,6 +34,38 @@ function getInitialSeedData(): StoreData {
   const users: User[] = [
     {
       id: 1,
+      name: 'Anu',
+      email: 'anu@baggagetrack.com',
+      password_hash: staffHash,
+      role: 'STAFF',
+      created_at: new Date().toISOString()
+    },
+    {
+      id: 2,
+      name: 'Gauthami',
+      email: 'gauthami@baggagetrack.com',
+      password_hash: staffHash,
+      role: 'STAFF',
+      created_at: new Date().toISOString()
+    },
+    {
+      id: 3,
+      name: 'Godwin',
+      email: 'godwin@baggagetrack.com',
+      password_hash: passengerHash,
+      role: 'PASSENGER',
+      created_at: new Date().toISOString()
+    },
+    {
+      id: 4,
+      name: 'Priya Patel',
+      email: 'priya.patel@example.com',
+      password_hash: passengerHash,
+      role: 'PASSENGER',
+      created_at: new Date().toISOString()
+    },
+    {
+      id: 5,
       name: 'Airport Operations Staff',
       email: 'staff@baggagetrack.com',
       password_hash: staffHash,
@@ -41,17 +73,9 @@ function getInitialSeedData(): StoreData {
       created_at: new Date().toISOString()
     },
     {
-      id: 2,
-      name: 'Rahul Sharma',
+      id: 6,
+      name: 'Passenger Demo',
       email: 'passenger@baggagetrack.com',
-      password_hash: passengerHash,
-      role: 'PASSENGER',
-      created_at: new Date().toISOString()
-    },
-    {
-      id: 3,
-      name: 'Priya Patel',
-      email: 'priya.patel@example.com',
       password_hash: passengerHash,
       role: 'PASSENGER',
       created_at: new Date().toISOString()
@@ -93,7 +117,7 @@ function getInitialSeedData(): StoreData {
       id: 1,
       tag_number: 'BG10001',
       flight_id: 1,
-      passenger_id: 2,
+      passenger_id: 3,
       weight: 18.5,
       status: 'IN TRANSIT',
       current_location: 'Delhi Airport',
@@ -104,7 +128,7 @@ function getInitialSeedData(): StoreData {
       id: 2,
       tag_number: 'BG10002',
       flight_id: 1,
-      passenger_id: 2,
+      passenger_id: 3,
       weight: 21.2,
       status: 'ARRIVED',
       current_location: 'Delhi Airport',
@@ -115,7 +139,7 @@ function getInitialSeedData(): StoreData {
       id: 3,
       tag_number: 'BG10003',
       flight_id: 2,
-      passenger_id: 3,
+      passenger_id: 4,
       weight: 16.8,
       status: 'DELAYED',
       current_location: 'Mumbai Airport',
@@ -126,12 +150,45 @@ function getInitialSeedData(): StoreData {
       id: 4,
       tag_number: 'BG10004',
       flight_id: 3,
-      passenger_id: 2,
+      passenger_id: 3,
       weight: 19.1,
       status: 'CLAIMED',
       current_location: 'Delhi Airport',
       created_at: '2026-10-07T06:30:00Z',
       updated_at: '2026-10-07T08:55:00Z'
+    },
+    {
+      id: 5,
+      tag_number: 'BG10005',
+      flight_id: 1,
+      passenger_id: 3,
+      weight: 22.0,
+      status: 'LOADED',
+      current_location: 'Delhi Airport',
+      created_at: '2026-10-07T07:00:00Z',
+      updated_at: '2026-10-07T08:30:00Z'
+    },
+    {
+      id: 6,
+      tag_number: 'BG10006',
+      flight_id: 2,
+      passenger_id: 4,
+      weight: 14.5,
+      status: 'CHECKED IN',
+      current_location: 'Mumbai Airport',
+      created_at: '2026-10-07T08:45:00Z',
+      updated_at: '2026-10-07T08:45:00Z'
+    },
+    {
+      id: 7,
+      tag_number: 'BG10007',
+      flight_id: 3,
+      passenger_id: 4,
+      weight: 17.3,
+      status: 'MISSING',
+      current_location: 'Delhi Airport',
+      created_at: '2026-10-07T05:30:00Z',
+      updated_at: '2026-10-07T09:10:00Z'
     }
   ];
 
@@ -510,26 +567,19 @@ function runStoreQuery(sql: string, params: any[] = []): any {
 
   // 5. Statistics: COUNT queries (must be before general SELECT * FROM baggage)
   if (/COUNT/i.test(cleanSql) && /FROM baggage/i.test(cleanSql)) {
-    // Calculate live dynamic counts based on operations inventory
-    const inTransitCount = store.baggage.filter(b => b.status === 'IN TRANSIT').length;
-    const delayedCount = store.baggage.filter(b => b.status === 'DELAYED').length;
-    const missingCount = store.baggage.filter(b => b.status === 'MISSING').length;
-    const claimedCount = store.baggage.filter(b => b.status === 'CLAIMED').length;
-    const arrivedCount = store.baggage.filter(b => b.status === 'ARRIVED').length;
-
-    // Derived from active airport operational load + live baggage entries
-    const dynamicTotal = 1245 + (store.baggage.length - 4);
-    const dynamicInTransit = Math.max(0, 320 + (inTransitCount - 1));
-    const dynamicDelayed = Math.max(0, 14 + (delayedCount - 1));
-    const dynamicMissing = Math.max(0, 3 + missingCount);
-    const dynamicClaimed = Math.max(0, 908 + (claimedCount - 1));
+    // Real counts computed directly from database records
+    const total = store.baggage.length;
+    const inTransit = store.baggage.filter(b => b.status === 'IN TRANSIT').length;
+    const delayed = store.baggage.filter(b => b.status === 'DELAYED').length;
+    const missing = store.baggage.filter(b => b.status === 'MISSING').length;
+    const claimed = store.baggage.filter(b => b.status === 'CLAIMED').length;
 
     return [{
-      total: dynamicTotal,
-      inTransit: dynamicInTransit,
-      delayed: dynamicDelayed,
-      missing: dynamicMissing,
-      claimed: dynamicClaimed
+      total,
+      inTransit,
+      delayed,
+      missing,
+      claimed
     }];
   }
 
@@ -555,6 +605,12 @@ function runStoreQuery(sql: string, params: any[] = []): any {
         passenger_email: passenger?.email || ''
       };
     });
+
+    if (/passenger_id\s*=\s*\?/i.test(cleanSql)) {
+      const pid = Number(params[0]);
+      result = result.filter(b => b.passenger_id === pid);
+    }
+
     return result;
   }
 

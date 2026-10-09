@@ -130,11 +130,11 @@ export async function getStatisticsHandler(req: Request, res: Response) {
     const r = rows && rows[0];
 
     const stats: DashboardStatistics = {
-      total: Number(r?.total || 1245),
-      inTransit: Number(r?.inTransit || 320),
-      delayed: Number(r?.delayed || 14),
-      missing: Number(r?.missing || 3),
-      claimed: Number(r?.claimed || 908)
+      total: Number(r?.total ?? 0),
+      inTransit: Number(r?.inTransit ?? 0),
+      delayed: Number(r?.delayed ?? 0),
+      missing: Number(r?.missing ?? 0),
+      claimed: Number(r?.claimed ?? 0)
     };
 
     return res.status(200).json(stats);
@@ -251,9 +251,9 @@ export async function addMovementHandler(req: Request, res: Response) {
 // 6. GET /api/passenger/dashboard
 export async function getPassengerDashboardHandler(req: AuthRequest, res: Response) {
   try {
-    const passengerId = req.user?.id || 2;
+    const passengerId = req.user?.id || 3; // Defaults to Godwin (id 3)
     const store = loadStore();
-    const passenger = store.users.find(u => u.id === passengerId);
+    const passenger = store.users.find(u => u.id === passengerId) || store.users.find(u => u.name === 'Godwin');
 
     const sql = `
       SELECT b.*, f.flight_number, f.origin, f.destination

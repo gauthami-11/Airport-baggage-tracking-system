@@ -18,8 +18,8 @@ export const PassengerDashboard: React.FC = () => {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [flightsCount, setFlightsCount] = useState(2);
-  const [baggageCount, setBaggageCount] = useState(3);
+  const [flightsCount, setFlightsCount] = useState(0);
+  const [baggageCount, setBaggageCount] = useState(0);
   const [baggageList, setBaggageList] = useState<Baggage[]>([]);
   const [flights, setFlights] = useState<Flight[]>([]);
 

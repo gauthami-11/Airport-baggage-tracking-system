@@ -25,11 +25,11 @@ import { Baggage, DashboardStatistics } from '../types/index.ts';
 
 export const StaffDashboard: React.FC = () => {
   const [stats, setStats] = useState<DashboardStatistics>({
-    total: 1245,
-    inTransit: 320,
-    delayed: 14,
-    missing: 3,
-    claimed: 908
+    total: 0,
+    inTransit: 0,
+    delayed: 0,
+    missing: 0,
+    claimed: 0
   });
   const [baggageList, setBaggageList] = useState<Baggage[]>([]);
   const [loading, setLoading] = useState(true);

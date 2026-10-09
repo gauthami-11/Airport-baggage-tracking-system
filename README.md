@@ -70,10 +70,13 @@ JWT_SECRET="baggagetrack_super_secret_jwt_key_2026"
 
 ## 🔑 Demo Credentials
 
-| Role | Email | Password | Initial Redirect |
-|---|---|---|---|
-| **Airport Staff** | `staff@baggagetrack.com` | `staff123` | `/staff/dashboard` |
-| **Passenger** | `passenger@baggagetrack.com` | `passenger123` | `/passenger/dashboard` |
+| Role | User Name | Email | Password | Initial Redirect |
+|---|---|---|---|---|
+| **Passenger** | **Godwin** | `godwin@baggagetrack.com` | `passenger123` | `/passenger/dashboard` |
+| **Airport Staff** | **Anu** | `anu@baggagetrack.com` | `staff123` | `/staff/dashboard` |
+| **Airport Staff** | **Gauthami** | `gauthami@baggagetrack.com` | `staff123` | `/staff/dashboard` |
+
+*(Generic aliases `passenger@baggagetrack.com` and `staff@baggagetrack.com` are also supported for quick login).*
 
 Sample baggage tags pre-seeded for testing:
 * `BG10001` (Flight AI302 — IN TRANSIT / ARRIVED)
