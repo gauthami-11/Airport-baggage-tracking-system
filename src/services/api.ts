@@ -4,8 +4,10 @@ import {
   Incident,
   DashboardStatistics,
   User,
+  Flight,
   BaggageStatus,
-  IncidentType
+  IncidentType,
+  PNRBaggageLookupResponse
 } from '../types/index.ts';
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
@@ -42,16 +44,37 @@ export const api = {
     return handleResponse(res);
   },
 
-  // Baggage Tracking (Public)
+  // Flights Lookup
+  async getFlights(): Promise<Flight[]> {
+    const res = await fetch(`${API_BASE}/flights?_t=${Date.now()}`, {
+      cache: 'no-store'
+    });
+    return handleResponse<Flight[]>(res);
+  },
+
+  // Baggage Tracking (Public by Tag)
   async getBaggageByTag(tagNumber: string): Promise<Baggage> {
     const cleanTag = tagNumber.trim().toUpperCase();
-    const res = await fetch(`${API_BASE}/baggage/${cleanTag}`);
+    const res = await fetch(`${API_BASE}/baggage/${cleanTag}?_t=${Date.now()}`, {
+      cache: 'no-store'
+    });
     return handleResponse<Baggage>(res);
+  },
+
+  // Baggage Tracking (Public by PNR)
+  async getBaggageByPNR(pnrNumber: string): Promise<PNRBaggageLookupResponse> {
+    const cleanPNR = pnrNumber.trim().toUpperCase();
+    const res = await fetch(`${API_BASE}/bookings/${cleanPNR}/baggage?_t=${Date.now()}`, {
+      cache: 'no-store'
+    });
+    return handleResponse<PNRBaggageLookupResponse>(res);
   },
 
   async getMovementsByTag(tagNumber: string): Promise<BaggageMovement[]> {
     const cleanTag = tagNumber.trim().toUpperCase();
-    const res = await fetch(`${API_BASE}/baggage/${cleanTag}/movements`);
+    const res = await fetch(`${API_BASE}/baggage/${cleanTag}/movements?_t=${Date.now()}`, {
+      cache: 'no-store'
+    });
     return handleResponse<BaggageMovement[]>(res);
   },
 
@@ -60,19 +83,43 @@ export const api = {
     const params = new URLSearchParams();
     if (filters?.status && filters.status !== 'ALL') params.append('status', filters.status);
     if (filters?.search) params.append('search', filters.search);
+    params.append('_t', String(Date.now()));
 
-    const queryStr = params.toString() ? `?${params.toString()}` : '';
-    const res = await fetch(`${API_BASE}/baggage${queryStr}`, {
-      headers: getAuthHeader()
+    const res = await fetch(`${API_BASE}/baggage?${params.toString()}`, {
+      headers: getAuthHeader(),
+      cache: 'no-store'
     });
     return handleResponse<Baggage[]>(res);
   },
 
   async getStatistics(): Promise<DashboardStatistics> {
-    const res = await fetch(`${API_BASE}/baggage/statistics`, {
-      headers: getAuthHeader()
+    const res = await fetch(`${API_BASE}/baggage/statistics?_t=${Date.now()}`, {
+      headers: getAuthHeader(),
+      cache: 'no-store'
     });
     return handleResponse<DashboardStatistics>(res);
+  },
+
+  // Staff Register New Baggage
+  async registerBaggage(data: {
+    tagNumber: string;
+    pnrNumber: string;
+    passengerName?: string;
+    flightNumber: string;
+    weight: number;
+    status?: BaggageStatus;
+    currentLocation: string;
+    remarks?: string;
+  }): Promise<{ message: string; tagNumber: string; pnrNumber: string; baggage: Baggage }> {
+    const res = await fetch(`${API_BASE}/baggage`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getAuthHeader()
+      },
+      body: JSON.stringify(data)
+    });
+    return handleResponse(res);
   },
 
   async updateBaggageStatus(
@@ -92,13 +139,19 @@ export const api = {
   },
 
   // Incident Operations
-  async getIncidents(status?: string): Promise<Incident[]> {
+  async getIncidents(filters?: { status?: string; passengerId?: number } | string): Promise<Incident[]> {
     const params = new URLSearchParams();
-    if (status && status !== 'ALL') params.append('status', status);
+    if (typeof filters === 'string') {
+      if (filters !== 'ALL') params.append('status', filters);
+    } else if (filters) {
+      if (filters.status && filters.status !== 'ALL') params.append('status', filters.status);
+      if (filters.passengerId) params.append('passengerId', String(filters.passengerId));
+    }
+    params.append('_t', String(Date.now()));
 
-    const queryStr = params.toString() ? `?${params.toString()}` : '';
-    const res = await fetch(`${API_BASE}/incidents${queryStr}`, {
-      headers: getAuthHeader()
+    const res = await fetch(`${API_BASE}/incidents?${params.toString()}`, {
+      headers: getAuthHeader(),
+      cache: 'no-store'
     });
     return handleResponse<Incident[]>(res);
   },
@@ -107,6 +160,7 @@ export const api = {
     baggageTag: string;
     type: IncidentType;
     description: string;
+    passengerId?: number;
   }): Promise<{ message: string; incident: Incident }> {
     const res = await fetch(`${API_BASE}/incidents`, {
       method: 'POST',
@@ -124,11 +178,13 @@ export const api = {
     passenger: User;
     flightsCount: number;
     baggageCount: number;
+    bookings?: any[];
     flights: any[];
     recentBaggage: Baggage[];
   }> {
-    const res = await fetch(`${API_BASE}/passenger/dashboard`, {
-      headers: getAuthHeader()
+    const res = await fetch(`${API_BASE}/passenger/dashboard?_t=${Date.now()}`, {
+      headers: getAuthHeader(),
+      cache: 'no-store'
     });
     return handleResponse(res);
   }

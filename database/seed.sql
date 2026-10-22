@@ -5,7 +5,6 @@
 USE baggage_tracking;
 
 -- 1. USERS
--- Passwords:
 -- Staff (Anu & Gauthami): staff123 ($2a$10$7vU0o3u5q0U6w30tD8V8seU40m7vMsqUoI4o7JvQy1dYw5tN.h2C2)
 -- Passenger (Godwin): passenger123 ($2a$10$bIek6j2X4jPjO/vU8yX5yeEcfiI12RkY.bI0p5pXy1hS0hL1.9yvO)
 INSERT INTO users (id, name, email, password_hash, role) VALUES
@@ -22,19 +21,26 @@ INSERT INTO flights (id, flight_number, origin, destination, departure_time, arr
 (2, 'AI405', 'Mumbai Airport', 'Delhi Airport', '10:00', '12:15', 'SCHEDULED'),
 (3, 'AI210', 'Delhi Airport', 'Bangalore Airport', '08:30', '11:00', 'ARRIVED');
 
--- 3. BAGGAGE
-INSERT INTO baggage (id, tag_number, flight_id, passenger_id, weight, status, current_location, updated_at) VALUES
-(1, 'BG10001', 1, 3, 18.50, 'IN TRANSIT', 'Delhi Airport', NOW()),
-(2, 'BG10002', 1, 3, 21.20, 'ARRIVED', 'Delhi Airport', NOW()),
-(3, 'BG10003', 2, 4, 16.80, 'DELAYED', 'Mumbai Airport', NOW()),
-(4, 'BG10004', 3, 3, 19.10, 'CLAIMED', 'Delhi Airport', NOW()),
-(5, 'BG10005', 1, 3, 22.00, 'LOADED', 'Delhi Airport', NOW()),
-(6, 'BG10006', 2, 4, 14.50, 'CHECKED IN', 'Mumbai Airport', NOW()),
-(7, 'BG10007', 3, 4, 17.30, 'MISSING', 'Delhi Airport', NOW());
+-- 3. PASSENGER BOOKINGS (PNR)
+INSERT INTO passenger_bookings (id, pnr_number, passenger_id, flight_id, created_at) VALUES
+(1, 'ABC123', 3, 1, NOW()),
+(2, 'XYZ789', 3, 3, NOW()),
+(3, 'DEL405', 4, 2, NOW()),
+(4, 'BLR210', 4, 3, NOW());
 
--- 4. BAGGAGE MOVEMENTS (Tracking History for BG10001)
+-- 4. BAGGAGE
+INSERT INTO baggage (id, tag_number, booking_id, flight_id, passenger_id, weight, status, current_location, updated_at) VALUES
+(1, 'BG10001', 1, 1, 3, 18.50, 'IN TRANSIT', 'Delhi Airport', NOW()),
+(2, 'BG10002', 1, 1, 3, 21.20, 'ARRIVED', 'Delhi Airport', NOW()),
+(3, 'BG10003', 3, 2, 4, 16.80, 'DELAYED', 'Mumbai Airport', NOW()),
+(4, 'BG10004', 2, 3, 3, 19.10, 'CLAIMED', 'Delhi Airport', NOW()),
+(5, 'BG10005', 1, 1, 3, 22.00, 'LOADED', 'Delhi Airport', NOW()),
+(6, 'BG10006', 3, 2, 4, 14.50, 'CHECKED IN', 'Mumbai Airport', NOW()),
+(7, 'BG10007', 4, 3, 4, 17.30, 'MISSING', 'Delhi Airport', NOW());
+
+-- 5. BAGGAGE MOVEMENTS (Tracking History for BG10001)
 INSERT INTO baggage_movements (baggage_id, timestamp, status, location, remarks) VALUES
-(1, '08:30', 'CHECKED IN', 'Delhi Airport', 'Checked in at Terminal 3 Counter B12 by Godwin'),
+(1, '08:30', 'CHECKED IN', 'Delhi Airport', 'Checked in at Terminal 3 Counter B12 by Godwin (PNR: ABC123)'),
 (1, '08:42', 'SECURITY', 'Delhi Airport', 'Security screening passed at Inspection Bay 4'),
 (1, '08:55', 'SORTED', 'Delhi Airport', 'Automated sorting completed to Cart 14'),
 (1, '09:20', 'LOADED', 'Delhi Airport', 'Loaded into Boeing 777 cargo hold door 2'),
@@ -42,7 +48,7 @@ INSERT INTO baggage_movements (baggage_id, timestamp, status, location, remarks)
 
 -- Movements for BG10002
 INSERT INTO baggage_movements (baggage_id, timestamp, status, location, remarks) VALUES
-(2, '07:15', 'CHECKED IN', 'Delhi Airport', 'Checked in at Terminal 3 Counter B14'),
+(2, '07:15', 'CHECKED IN', 'Delhi Airport', 'Checked in at Terminal 3 Counter B14 (PNR: ABC123)'),
 (2, '07:35', 'SECURITY', 'Delhi Airport', 'Security screening cleared'),
 (2, '08:10', 'SORTED', 'Delhi Airport', 'Sorted for flight AI302'),
 (2, '08:50', 'LOADED', 'Delhi Airport', 'Loaded into front compartment'),
@@ -50,20 +56,27 @@ INSERT INTO baggage_movements (baggage_id, timestamp, status, location, remarks)
 
 -- Movements for BG10003
 INSERT INTO baggage_movements (baggage_id, timestamp, status, location, remarks) VALUES
-(3, '08:15', 'CHECKED IN', 'Mumbai Airport', 'Checked in at Terminal 2'),
+(3, '08:15', 'CHECKED IN', 'Mumbai Airport', 'Checked in at Terminal 2 (PNR: DEL405)'),
 (3, '08:30', 'SECURITY', 'Mumbai Airport', 'Security clearance granted'),
 (3, '09:05', 'DELAYED', 'Mumbai Airport', 'Flight connection delayed due to weather');
 
 -- Movements for BG10004
 INSERT INTO baggage_movements (baggage_id, timestamp, status, location, remarks) VALUES
-(4, '06:30', 'CHECKED IN', 'Delhi Airport', 'Checked in at Counter A04'),
+(4, '06:30', 'CHECKED IN', 'Delhi Airport', 'Checked in at Counter A04 (PNR: XYZ789)'),
 (4, '07:00', 'SECURITY', 'Delhi Airport', 'Security clearance verified'),
 (4, '07:30', 'SORTED', 'Delhi Airport', 'Baggage sorting complete'),
 (4, '08:00', 'LOADED', 'Delhi Airport', 'Loaded onto flight AI210'),
 (4, '08:30', 'IN TRANSIT', 'Delhi Airport', 'En route to Bangalore'),
 (4, '08:55', 'CLAIMED', 'Delhi Airport', 'Baggage claimed by passenger at Carousel 2');
 
--- 5. INCIDENTS
+-- Movements for BG10005
+INSERT INTO baggage_movements (baggage_id, timestamp, status, location, remarks) VALUES
+(5, '07:00', 'CHECKED IN', 'Delhi Airport', 'Checked in at Counter B12 (PNR: ABC123)'),
+(5, '07:30', 'SECURITY', 'Delhi Airport', 'Screened and tagged'),
+(5, '08:00', 'SORTED', 'Delhi Airport', 'Sorted for AI302'),
+(5, '08:30', 'LOADED', 'Delhi Airport', 'Loaded into hold 1');
+
+-- 6. INCIDENTS
 INSERT INTO incidents (id, baggage_id, reported_by, type, description, status) VALUES
 (1, 1, 1, 'DAMAGED BAGGAGE', 'Minor scratch and zipper tear reported on outer pocket', 'OPEN'),
 (2, 3, 2, 'DELAYED', 'Baggage did not arrive with flight AI405 due to tight turnaround', 'INVESTIGATING');

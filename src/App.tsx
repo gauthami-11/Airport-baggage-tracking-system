@@ -8,7 +8,9 @@ import { Home } from './pages/Home.tsx';
 import { Login } from './pages/Login.tsx';
 import { TrackBaggage } from './pages/TrackBaggage.tsx';
 import { PassengerDashboard } from './pages/PassengerDashboard.tsx';
+import { PassengerReportIssue } from './pages/PassengerReportIssue.tsx';
 import { StaffDashboard } from './pages/StaffDashboard.tsx';
+import { AddBaggage } from './pages/AddBaggage.tsx';
 import { UpdateBaggage } from './pages/UpdateBaggage.tsx';
 import { Incidents } from './pages/Incidents.tsx';
 
@@ -27,11 +29,13 @@ export default function App() {
           {/* Passenger Routes */}
           <Route element={<DashboardLayout role="PASSENGER" />}>
             <Route path="/passenger/dashboard" element={<PassengerDashboard />} />
+            <Route path="/passenger/report-issue" element={<PassengerReportIssue />} />
           </Route>
 
           {/* Staff Routes */}
           <Route element={<DashboardLayout role="STAFF" />}>
             <Route path="/staff/dashboard" element={<StaffDashboard />} />
+            <Route path="/staff/add-baggage" element={<AddBaggage />} />
             <Route path="/staff/update-baggage" element={<UpdateBaggage />} />
             <Route path="/staff/incidents" element={<Incidents />} />
           </Route>

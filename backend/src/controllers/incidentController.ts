@@ -41,6 +41,11 @@ export async function getIncidentsHandler(req: Request, res: Response) {
       incidents = incidents.filter(i => i.status.toUpperCase() === status.toUpperCase());
     }
 
+    const passengerId = req.query.passengerId ? Number(req.query.passengerId) : undefined;
+    if (passengerId) {
+      incidents = incidents.filter(i => i.reported_by === passengerId);
+    }
+
     return res.status(200).json(incidents);
   } catch (error: any) {
     console.error('Error fetching incidents:', error);
@@ -51,7 +56,7 @@ export async function getIncidentsHandler(req: Request, res: Response) {
 // POST /api/incidents
 export async function createIncidentHandler(req: AuthRequest, res: Response) {
   try {
-    const { baggageTag, type, description } = req.body;
+    const { baggageTag, type, description, passengerId } = req.body;
 
     if (!baggageTag || !baggageTag.trim()) {
       return res.status(400).json({ message: 'Baggage tag is required.' });
@@ -74,15 +79,19 @@ export async function createIncidentHandler(req: AuthRequest, res: Response) {
       return res.status(404).json({ message: `No baggage found for tag number: ${baggageTag}` });
     }
 
-    const reporterId = req.user?.id || 1;
+    const reporterId = req.user?.id || (passengerId ? Number(passengerId) : (baggage.passenger_id || 3));
     const store = loadStore();
     const reporter = store.users.find(u => u.id === reporterId);
 
     const now = new Date().toISOString();
-    const newId = (store.incidents.length > 0 ? Math.max(...store.incidents.map(i => i.id || 0)) : 0) + 1;
+
+    const insertResult = await query(
+      `INSERT INTO incidents (baggage_id, reported_by, type, description, status) VALUES (?, ?, ?, ?, 'OPEN')`,
+      [baggage.id, reporterId, normalizedType, description.trim()]
+    );
 
     const newIncident: Incident = {
-      id: newId,
+      id: insertResult.insertId || Date.now(),
       baggage_id: baggage.id,
       reported_by: reporterId,
       type: normalizedType,
@@ -91,17 +100,9 @@ export async function createIncidentHandler(req: AuthRequest, res: Response) {
       created_at: now,
       updated_at: now,
       tag_number: baggage.tag_number,
-      reporter_name: reporter?.name || 'Airport Staff',
-      reporter_email: reporter?.email || 'staff@baggagetrack.com'
+      reporter_name: reporter?.name || 'Passenger',
+      reporter_email: reporter?.email || 'passenger@baggagetrack.com'
     };
-
-    await query(
-      `INSERT INTO incidents (baggage_id, reported_by, type, description, status) VALUES (?, ?, ?, ?, 'OPEN')`,
-      [baggage.id, reporterId, normalizedType, description.trim()]
-    );
-
-    store.incidents.unshift(newIncident);
-    saveStore();
 
     return res.status(201).json({
       message: 'Incident reported successfully.',

@@ -11,18 +11,29 @@ export const Home: React.FC = () => {
 
   const handleTrack = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!tagInput.trim()) {
-      setError('Please enter a baggage tag number.');
+    const clean = tagInput.trim().toUpperCase();
+    if (!clean) {
+      setError('Please enter a baggage tag or PNR number.');
       return;
     }
     setError('');
-    navigate(`/track?tag=${encodeURIComponent(tagInput.trim().toUpperCase())}`);
+    if (/^[A-Z0-9]{3,8}$/.test(clean) && !clean.startsWith('BG')) {
+      navigate(`/track?pnr=${encodeURIComponent(clean)}`);
+    } else {
+      navigate(`/track?tag=${encodeURIComponent(clean)}`);
+    }
   };
 
   const handleQuickTag = (tag: string) => {
     setTagInput(tag);
     setError('');
     navigate(`/track?tag=${tag}`);
+  };
+
+  const handleQuickPnr = (pnr: string) => {
+    setTagInput(pnr);
+    setError('');
+    navigate(`/track?pnr=${pnr}`);
   };
 
   return (
@@ -40,7 +51,7 @@ export const Home: React.FC = () => {
             Track your baggage
           </h1>
           <p className="text-lg text-slate-600 mb-10 max-w-xl mx-auto leading-relaxed">
-            Know where your baggage is throughout your airport journey.
+            Know where your baggage is throughout your airport journey using your Tag barcode or Booking PNR.
           </p>
 
           {/* Main Tracking Form - Visual Focus */}
@@ -57,7 +68,7 @@ export const Home: React.FC = () => {
                     setTagInput(e.target.value);
                     if (error) setError('');
                   }}
-                  placeholder="Enter Baggage Tag Number"
+                  placeholder="Enter Baggage Tag (BG10001) or PNR (ABC123)"
                   className="w-full pl-12 pr-4 py-3.5 text-base font-mono font-medium rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent uppercase placeholder:font-sans placeholder:normal-case placeholder:text-slate-400"
                 />
               </div>
@@ -76,10 +87,10 @@ export const Home: React.FC = () => {
             )}
           </div>
 
-          {/* Quick Demo Tag Suggestions */}
+          {/* Quick Demo Tag and PNR Suggestions */}
           <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-slate-500">
-            <span className="font-medium text-slate-400">Demo tags:</span>
-            {['BG10001', 'BG10002', 'BG10003', 'BG10004'].map((tag) => (
+            <span className="font-medium text-slate-400">Quick track:</span>
+            {['BG10001', 'BG10002', 'BG10003'].map((tag) => (
               <button
                 key={tag}
                 type="button"
@@ -87,6 +98,18 @@ export const Home: React.FC = () => {
                 className="font-mono px-2.5 py-1 bg-white hover:bg-slate-100 rounded-md border border-slate-200 font-semibold text-slate-700 transition-colors cursor-pointer shadow-2xs"
               >
                 {tag}
+              </button>
+            ))}
+            <span className="text-slate-300">|</span>
+            <span className="font-medium text-slate-400">PNR:</span>
+            {['ABC123', 'XYZ789', 'DEL405'].map((pnr) => (
+              <button
+                key={pnr}
+                type="button"
+                onClick={() => handleQuickPnr(pnr)}
+                className="font-mono px-2.5 py-1 bg-blue-50 hover:bg-blue-100 rounded-md border border-blue-200 font-semibold text-blue-700 transition-colors cursor-pointer shadow-2xs"
+              >
+                {pnr}
               </button>
             ))}
           </div>

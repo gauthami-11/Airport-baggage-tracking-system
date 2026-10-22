@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Plane, Luggage, Plus, Search, AlertCircle, ArrowUpRight } from 'lucide-react';
+import { Plane, Luggage, Plus, Search, AlertCircle, ArrowUpRight, AlertTriangle } from 'lucide-react';
 import { PageHeader } from '../components/common/PageHeader.tsx';
 import { Card } from '../components/common/Card.tsx';
 import { StatCard } from '../components/common/StatCard.tsx';
@@ -48,16 +48,28 @@ export const PassengerDashboard: React.FC = () => {
         heading={`Welcome, ${user?.name || 'Passenger'}`}
         supportingText="Here's an overview of your flights and baggage."
         action={
-          <Link to="/track">
-            <Button
-              variant="secondary"
-              size="md"
-              icon={<Plus className="w-4 h-4" />}
-              className="shadow-sm font-semibold cursor-pointer"
-            >
-              + Track Baggage
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2.5">
+            <Link to="/passenger/report-issue">
+              <Button
+                variant="outline"
+                size="md"
+                icon={<AlertTriangle className="w-4 h-4 text-amber-500" />}
+                className="font-semibold cursor-pointer"
+              >
+                Report Issue
+              </Button>
+            </Link>
+            <Link to="/track">
+              <Button
+                variant="secondary"
+                size="md"
+                icon={<Plus className="w-4 h-4" />}
+                className="shadow-sm font-semibold cursor-pointer"
+              >
+                + Track Baggage
+              </Button>
+            </Link>
+          </div>
         }
       />
 
@@ -127,20 +139,31 @@ export const PassengerDashboard: React.FC = () => {
           {/* Associated Flights Section */}
           {flights.length > 0 && (
             <div id="flights">
-              <Card title="Flight Itineraries" subtitle="Registered flights linked to your profile">
+              <Card title="Flight Itineraries" subtitle="Active bookings and flight reservations linked to your account">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {flights.map((f) => (
+                  {flights.map((f: any) => (
                     <div
                       key={f.id}
-                      className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex items-center justify-between"
+                      className="p-4 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-slate-50 transition-colors flex items-center justify-between"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="p-2.5 rounded-lg bg-blue-100 text-blue-700">
+                        <div className="p-2.5 rounded-lg bg-blue-100 text-blue-700 shrink-0">
                           <Plane className="w-5 h-5 -rotate-45" />
                         </div>
                         <div>
-                          <div className="font-bold text-slate-900 font-mono text-sm">{f.flight_number}</div>
-                          <div className="text-xs text-slate-500 font-medium">
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-slate-900 font-mono text-sm">{f.flight_number}</span>
+                            {f.pnr_number && (
+                              <Link
+                                to={`/track?pnr=${f.pnr_number}`}
+                                className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200/80 transition-colors"
+                                title="Track luggage on this booking"
+                              >
+                                PNR: {f.pnr_number}
+                              </Link>
+                            )}
+                          </div>
+                          <div className="text-xs text-slate-600 font-medium mt-0.5">
                             {f.origin} → {f.destination}
                           </div>
                         </div>

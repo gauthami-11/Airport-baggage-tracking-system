@@ -79,7 +79,17 @@ export const StaffDashboard: React.FC = () => {
         heading="Staff Dashboard"
         supportingText="Airport baggage operations overview."
         action={
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <Link to="/staff/add-baggage">
+              <Button
+                variant="primary"
+                size="md"
+                icon={<Plus className="w-4 h-4" />}
+                className="font-bold shadow-xs cursor-pointer bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                Add Baggage
+              </Button>
+            </Link>
             <Link to="/staff/update-baggage">
               <Button
                 variant="secondary"

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Baggage } from '../../types/index.ts';
 import { StatusBadge } from '../common/StatusBadge.tsx';
-import { ExternalLink, Clock, Plane, MapPin } from 'lucide-react';
+import { ExternalLink, Clock, Plane, MapPin, Ticket } from 'lucide-react';
 
 interface BaggageTableProps {
   items: Baggage[];
@@ -31,6 +31,7 @@ export const BaggageTable: React.FC<BaggageTableProps> = ({
         <thead>
           <tr className="border-b border-slate-200 bg-slate-50/75 text-2xs font-bold uppercase tracking-wider text-slate-500">
             <th className="py-3 px-4">Tag Number</th>
+            <th className="py-3 px-4">PNR</th>
             <th className="py-3 px-4">Flight</th>
             {showWeight && <th className="py-3 px-4">Weight</th>}
             <th className="py-3 px-4">Status</th>
@@ -55,6 +56,22 @@ export const BaggageTable: React.FC<BaggageTableProps> = ({
                   <span className="bg-slate-100 text-slate-800 px-2.5 py-1 rounded-md text-xs border border-slate-200">
                     {bag.tag_number}
                   </span>
+                </td>
+
+                {/* PNR Booking */}
+                <td className="py-3.5 px-4 whitespace-nowrap">
+                  {bag.pnr_number ? (
+                    <Link
+                      to={`/track?pnr=${bag.pnr_number}`}
+                      className="inline-flex items-center gap-1 font-mono text-xs font-semibold px-2 py-0.5 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200/60"
+                      title="Track by PNR"
+                    >
+                      <Ticket className="w-3 h-3 text-blue-500" />
+                      <span>{bag.pnr_number}</span>
+                    </Link>
+                  ) : (
+                    <span className="text-slate-400 text-xs font-mono">—</span>
+                  )}
                 </td>
 
                 {/* Flight */}

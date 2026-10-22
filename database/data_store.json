@@ -1,0 +1,558 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Anu",
+      "email": "anu@baggagetrack.com",
+      "password_hash": "$2b$10$4WJ.pxdy4GZlqPKpG3Okg.OO7X6AeRcPYZFnqKa6k3W1c0c4xg0.m",
+      "role": "STAFF",
+      "created_at": "2026-10-22T11:49:40.250Z"
+    },
+    {
+      "id": 2,
+      "name": "Gauthami",
+      "email": "gauthami@baggagetrack.com",
+      "password_hash": "$2b$10$4WJ.pxdy4GZlqPKpG3Okg.OO7X6AeRcPYZFnqKa6k3W1c0c4xg0.m",
+      "role": "STAFF",
+      "created_at": "2026-10-22T11:49:40.250Z"
+    },
+    {
+      "id": 3,
+      "name": "Godwin",
+      "email": "godwin@baggagetrack.com",
+      "password_hash": "$2b$10$A3/DmG0NUugDeewpzt0TQOCkLzUnlwsON/AkoMb./pCMKIfbHEx5S",
+      "role": "PASSENGER",
+      "created_at": "2026-10-22T11:49:40.250Z"
+    },
+    {
+      "id": 4,
+      "name": "Priya Patel",
+      "email": "priya.patel@example.com",
+      "password_hash": "$2b$10$A3/DmG0NUugDeewpzt0TQOCkLzUnlwsON/AkoMb./pCMKIfbHEx5S",
+      "role": "PASSENGER",
+      "created_at": "2026-10-22T11:49:40.250Z"
+    },
+    {
+      "id": 5,
+      "name": "Airport Operations Staff",
+      "email": "staff@baggagetrack.com",
+      "password_hash": "$2b$10$4WJ.pxdy4GZlqPKpG3Okg.OO7X6AeRcPYZFnqKa6k3W1c0c4xg0.m",
+      "role": "STAFF",
+      "created_at": "2026-10-22T11:49:40.250Z"
+    },
+    {
+      "id": 6,
+      "name": "Passenger Demo",
+      "email": "passenger@baggagetrack.com",
+      "password_hash": "$2b$10$A3/DmG0NUugDeewpzt0TQOCkLzUnlwsON/AkoMb./pCMKIfbHEx5S",
+      "role": "PASSENGER",
+      "created_at": "2026-10-22T11:49:40.250Z"
+    },
+    {
+      "id": 7,
+      "name": "Test Passenger",
+      "email": "testpassenger@passenger.baggagetrack.com",
+      "password_hash": "$2b$10$bBmTBkLev5SZ85U9sgdM/uIQXd/BcGhjSGvnLSo0mpDMQS3TYAdgq",
+      "role": "PASSENGER",
+      "created_at": "2026-10-22T12:58:59.490Z"
+    }
+  ],
+  "flights": [
+    {
+      "id": 1,
+      "flight_number": "AI302",
+      "origin": "Delhi Airport",
+      "destination": "Mumbai Airport",
+      "departure_time": "09:00",
+      "arrival_time": "11:10",
+      "status": "DEPARTED"
+    },
+    {
+      "id": 2,
+      "flight_number": "AI405",
+      "origin": "Mumbai Airport",
+      "destination": "Delhi Airport",
+      "departure_time": "10:00",
+      "arrival_time": "12:15",
+      "status": "SCHEDULED"
+    },
+    {
+      "id": 3,
+      "flight_number": "AI210",
+      "origin": "Delhi Airport",
+      "destination": "Bangalore Airport",
+      "departure_time": "08:30",
+      "arrival_time": "11:00",
+      "status": "ARRIVED"
+    }
+  ],
+  "bookings": [
+    {
+      "id": 1,
+      "pnr_number": "ABC123",
+      "passenger_id": 3,
+      "flight_id": 1,
+      "created_at": "2026-10-22T11:49:40.250Z"
+    },
+    {
+      "id": 2,
+      "pnr_number": "XYZ789",
+      "passenger_id": 3,
+      "flight_id": 3,
+      "created_at": "2026-10-22T11:49:40.250Z"
+    },
+    {
+      "id": 3,
+      "pnr_number": "DEL405",
+      "passenger_id": 4,
+      "flight_id": 2,
+      "created_at": "2026-10-22T11:49:40.250Z"
+    },
+    {
+      "id": 4,
+      "pnr_number": "BLR210",
+      "passenger_id": 4,
+      "flight_id": 3,
+      "created_at": "2026-10-22T11:49:40.250Z"
+    },
+    {
+      "id": 5,
+      "pnr_number": "NEW777",
+      "passenger_id": 7,
+      "flight_id": 1,
+      "created_at": "2026-10-22T12:58:59.491Z"
+    }
+  ],
+  "baggage": [
+    {
+      "id": 12,
+      "tag_number": "BG83596",
+      "booking_id": 2,
+      "flight_id": 3,
+      "passenger_id": 3,
+      "weight": 19,
+      "status": "CHECKED IN",
+      "current_location": "Delhi Airport - Terminal 3",
+      "created_at": "2026-10-22T13:02:36.170Z",
+      "updated_at": "2026-10-22T13:02:36.170Z"
+    },
+    {
+      "id": 11,
+      "tag_number": "BG40673",
+      "booking_id": 1,
+      "flight_id": 1,
+      "passenger_id": 3,
+      "weight": 18.5,
+      "status": "CHECKED IN",
+      "current_location": "Delhi Airport - Terminal 3",
+      "created_at": "2026-10-22T13:02:36.023Z",
+      "updated_at": "2026-10-22T13:02:36.023Z"
+    },
+    {
+      "id": 10,
+      "tag_number": "BG99002",
+      "booking_id": 1,
+      "flight_id": 1,
+      "passenger_id": 3,
+      "weight": 20,
+      "status": "CHECKED IN",
+      "current_location": "Delhi Airport - Terminal 3",
+      "created_at": "2026-10-22T12:58:59.501Z",
+      "updated_at": "2026-10-22T12:58:59.501Z"
+    },
+    {
+      "id": 9,
+      "tag_number": "BG99001",
+      "booking_id": 5,
+      "flight_id": 1,
+      "passenger_id": 7,
+      "weight": 15,
+      "status": "CHECKED IN",
+      "current_location": "Delhi Airport - Terminal 3",
+      "created_at": "2026-10-22T12:58:59.492Z",
+      "updated_at": "2026-10-22T12:58:59.492Z"
+    },
+    {
+      "id": 8,
+      "tag_number": "BG10099",
+      "booking_id": 1,
+      "flight_id": 1,
+      "passenger_id": 3,
+      "weight": 16.5,
+      "status": "CHECKED IN",
+      "current_location": "Delhi Airport - Terminal 3",
+      "created_at": "2026-10-22T11:50:16.284Z",
+      "updated_at": "2026-10-22T11:50:16.284Z"
+    },
+    {
+      "id": 1,
+      "tag_number": "BG10001",
+      "booking_id": 1,
+      "flight_id": 1,
+      "passenger_id": 3,
+      "weight": 18.5,
+      "status": "IN TRANSIT",
+      "current_location": "Delhi Airport",
+      "created_at": "2026-10-07T08:30:00Z",
+      "updated_at": "2026-10-07T09:35:00Z"
+    },
+    {
+      "id": 2,
+      "tag_number": "BG10002",
+      "booking_id": 1,
+      "flight_id": 1,
+      "passenger_id": 3,
+      "weight": 21.2,
+      "status": "ARRIVED",
+      "current_location": "Delhi Airport",
+      "created_at": "2026-10-07T07:15:00Z",
+      "updated_at": "2026-10-07T09:20:00Z"
+    },
+    {
+      "id": 3,
+      "tag_number": "BG10003",
+      "booking_id": 3,
+      "flight_id": 2,
+      "passenger_id": 4,
+      "weight": 16.8,
+      "status": "DELAYED",
+      "current_location": "Mumbai Airport",
+      "created_at": "2026-10-07T08:15:00Z",
+      "updated_at": "2026-10-07T09:05:00Z"
+    },
+    {
+      "id": 4,
+      "tag_number": "BG10004",
+      "booking_id": 2,
+      "flight_id": 3,
+      "passenger_id": 3,
+      "weight": 19.1,
+      "status": "CLAIMED",
+      "current_location": "Delhi Airport",
+      "created_at": "2026-10-07T06:30:00Z",
+      "updated_at": "2026-10-07T08:55:00Z"
+    },
+    {
+      "id": 5,
+      "tag_number": "BG10005",
+      "booking_id": 1,
+      "flight_id": 1,
+      "passenger_id": 3,
+      "weight": 22,
+      "status": "LOADED",
+      "current_location": "Delhi Airport",
+      "created_at": "2026-10-07T07:00:00Z",
+      "updated_at": "2026-10-07T08:30:00Z"
+    },
+    {
+      "id": 6,
+      "tag_number": "BG10006",
+      "booking_id": 3,
+      "flight_id": 2,
+      "passenger_id": 4,
+      "weight": 14.5,
+      "status": "CHECKED IN",
+      "current_location": "Mumbai Airport",
+      "created_at": "2026-10-07T08:45:00Z",
+      "updated_at": "2026-10-07T08:45:00Z"
+    },
+    {
+      "id": 7,
+      "tag_number": "BG10007",
+      "booking_id": 4,
+      "flight_id": 3,
+      "passenger_id": 4,
+      "weight": 17.3,
+      "status": "MISSING",
+      "current_location": "Delhi Airport",
+      "created_at": "2026-10-07T05:30:00Z",
+      "updated_at": "2026-10-07T09:10:00Z"
+    }
+  ],
+  "movements": [
+    {
+      "id": 1,
+      "baggage_id": 1,
+      "timestamp": "08:30",
+      "status": "CHECKED IN",
+      "location": "Delhi Airport",
+      "remarks": "Checked in at Terminal 3 Counter B12 by Godwin (PNR: ABC123)",
+      "created_at": "2026-10-07T08:30:00Z"
+    },
+    {
+      "id": 2,
+      "baggage_id": 1,
+      "timestamp": "08:42",
+      "status": "SECURITY",
+      "location": "Delhi Airport",
+      "remarks": "Security screening passed at Inspection Bay 4",
+      "created_at": "2026-10-07T08:42:00Z"
+    },
+    {
+      "id": 3,
+      "baggage_id": 1,
+      "timestamp": "08:55",
+      "status": "SORTED",
+      "location": "Delhi Airport",
+      "remarks": "Automated sorting completed to Cart 14",
+      "created_at": "2026-10-07T08:55:00Z"
+    },
+    {
+      "id": 4,
+      "baggage_id": 1,
+      "timestamp": "09:20",
+      "status": "LOADED",
+      "location": "Delhi Airport",
+      "remarks": "Loaded into Boeing 777 cargo hold door 2",
+      "created_at": "2026-10-07T09:20:00Z"
+    },
+    {
+      "id": 5,
+      "baggage_id": 1,
+      "timestamp": "09:35",
+      "status": "IN TRANSIT",
+      "location": "Delhi Airport",
+      "remarks": "Flight AI302 pushback and departure en route to Mumbai",
+      "created_at": "2026-10-07T09:35:00Z"
+    },
+    {
+      "id": 6,
+      "baggage_id": 2,
+      "timestamp": "07:15",
+      "status": "CHECKED IN",
+      "location": "Delhi Airport",
+      "remarks": "Checked in at Terminal 3 Counter B14 (PNR: ABC123)",
+      "created_at": "2026-10-07T07:15:00Z"
+    },
+    {
+      "id": 7,
+      "baggage_id": 2,
+      "timestamp": "07:35",
+      "status": "SECURITY",
+      "location": "Delhi Airport",
+      "remarks": "Security screening cleared",
+      "created_at": "2026-10-07T07:35:00Z"
+    },
+    {
+      "id": 8,
+      "baggage_id": 2,
+      "timestamp": "08:10",
+      "status": "SORTED",
+      "location": "Delhi Airport",
+      "remarks": "Sorted for flight AI302",
+      "created_at": "2026-10-07T08:10:00Z"
+    },
+    {
+      "id": 9,
+      "baggage_id": 2,
+      "timestamp": "08:50",
+      "status": "LOADED",
+      "location": "Delhi Airport",
+      "remarks": "Loaded into front compartment",
+      "created_at": "2026-10-07T08:50:00Z"
+    },
+    {
+      "id": 10,
+      "baggage_id": 2,
+      "timestamp": "09:20",
+      "status": "ARRIVED",
+      "location": "Delhi Airport",
+      "remarks": "Unloaded at carousel bay",
+      "created_at": "2026-10-07T09:20:00Z"
+    },
+    {
+      "id": 11,
+      "baggage_id": 3,
+      "timestamp": "08:15",
+      "status": "CHECKED IN",
+      "location": "Mumbai Airport",
+      "remarks": "Checked in at Terminal 2 (PNR: DEL405)",
+      "created_at": "2026-10-07T08:15:00Z"
+    },
+    {
+      "id": 12,
+      "baggage_id": 3,
+      "timestamp": "08:30",
+      "status": "SECURITY",
+      "location": "Mumbai Airport",
+      "remarks": "Security clearance granted",
+      "created_at": "2026-10-07T08:30:00Z"
+    },
+    {
+      "id": 13,
+      "baggage_id": 3,
+      "timestamp": "09:05",
+      "status": "DELAYED",
+      "location": "Mumbai Airport",
+      "remarks": "Flight connection delayed due to weather",
+      "created_at": "2026-10-07T09:05:00Z"
+    },
+    {
+      "id": 14,
+      "baggage_id": 4,
+      "timestamp": "06:30",
+      "status": "CHECKED IN",
+      "location": "Delhi Airport",
+      "remarks": "Checked in at Counter A04 (PNR: XYZ789)",
+      "created_at": "2026-10-07T06:30:00Z"
+    },
+    {
+      "id": 15,
+      "baggage_id": 4,
+      "timestamp": "07:00",
+      "status": "SECURITY",
+      "location": "Delhi Airport",
+      "remarks": "Security clearance verified",
+      "created_at": "2026-10-07T07:00:00Z"
+    },
+    {
+      "id": 16,
+      "baggage_id": 4,
+      "timestamp": "07:30",
+      "status": "SORTED",
+      "location": "Delhi Airport",
+      "remarks": "Baggage sorting complete",
+      "created_at": "2026-10-07T07:30:00Z"
+    },
+    {
+      "id": 17,
+      "baggage_id": 4,
+      "timestamp": "08:00",
+      "status": "LOADED",
+      "location": "Delhi Airport",
+      "remarks": "Loaded onto flight AI210",
+      "created_at": "2026-10-07T08:00:00Z"
+    },
+    {
+      "id": 18,
+      "baggage_id": 4,
+      "timestamp": "08:30",
+      "status": "IN TRANSIT",
+      "location": "Delhi Airport",
+      "remarks": "En route to Bangalore",
+      "created_at": "2026-10-07T08:30:00Z"
+    },
+    {
+      "id": 19,
+      "baggage_id": 4,
+      "timestamp": "08:55",
+      "status": "CLAIMED",
+      "location": "Delhi Airport",
+      "remarks": "Baggage claimed by passenger at Carousel 2",
+      "created_at": "2026-10-07T08:55:00Z"
+    },
+    {
+      "id": 20,
+      "baggage_id": 5,
+      "timestamp": "07:00",
+      "status": "CHECKED IN",
+      "location": "Delhi Airport",
+      "remarks": "Checked in at Terminal 3 Counter B12 (PNR: ABC123)",
+      "created_at": "2026-10-07T07:00:00Z"
+    },
+    {
+      "id": 21,
+      "baggage_id": 5,
+      "timestamp": "07:30",
+      "status": "SECURITY",
+      "location": "Delhi Airport",
+      "remarks": "Screened and tagged",
+      "created_at": "2026-10-07T07:30:00Z"
+    },
+    {
+      "id": 22,
+      "baggage_id": 5,
+      "timestamp": "08:00",
+      "status": "SORTED",
+      "location": "Delhi Airport",
+      "remarks": "Sorted for flight AI302",
+      "created_at": "2026-10-07T08:00:00Z"
+    },
+    {
+      "id": 23,
+      "baggage_id": 5,
+      "timestamp": "08:30",
+      "status": "LOADED",
+      "location": "Delhi Airport",
+      "remarks": "Loaded into cargo hold door 1",
+      "created_at": "2026-10-07T08:30:00Z"
+    },
+    {
+      "id": 24,
+      "baggage_id": 8,
+      "timestamp": "11:50",
+      "status": "CHECKED IN",
+      "location": "Delhi Airport - Terminal 3",
+      "remarks": "Checked in at counter B5",
+      "created_at": "2026-10-22T11:50:16.284Z"
+    },
+    {
+      "id": 25,
+      "baggage_id": 9,
+      "timestamp": "12:58",
+      "status": "CHECKED IN",
+      "location": "Delhi Airport - Terminal 3",
+      "remarks": "Registered at baggage counter",
+      "created_at": "2026-10-22T12:58:59.493Z"
+    },
+    {
+      "id": 26,
+      "baggage_id": 10,
+      "timestamp": "12:58",
+      "status": "CHECKED IN",
+      "location": "Delhi Airport - Terminal 3",
+      "remarks": "Registered at baggage counter",
+      "created_at": "2026-10-22T12:58:59.501Z"
+    },
+    {
+      "id": 27,
+      "baggage_id": 11,
+      "timestamp": "13:02",
+      "status": "CHECKED IN",
+      "location": "Delhi Airport - Terminal 3",
+      "remarks": "Registered at baggage counter",
+      "created_at": "2026-10-22T13:02:36.024Z"
+    },
+    {
+      "id": 28,
+      "baggage_id": 12,
+      "timestamp": "13:02",
+      "status": "CHECKED IN",
+      "location": "Delhi Airport - Terminal 3",
+      "remarks": "Registered at baggage counter",
+      "created_at": "2026-10-22T13:02:36.170Z"
+    }
+  ],
+  "incidents": [
+    {
+      "id": 3,
+      "baggage_id": 1,
+      "reported_by": 3,
+      "type": "DELAYED",
+      "description": "Luggage has not arrived on Carousel 2 after 40 minutes.",
+      "status": "OPEN",
+      "created_at": "2026-10-22T13:16:14.528Z",
+      "updated_at": "2026-10-22T13:16:14.528Z"
+    },
+    {
+      "id": 1,
+      "baggage_id": 1,
+      "reported_by": 1,
+      "type": "DAMAGED BAGGAGE",
+      "description": "Minor scratch and zipper tear reported on outer pocket",
+      "status": "OPEN",
+      "created_at": "2026-10-22T11:39:40.250Z",
+      "updated_at": "2026-10-22T11:39:40.250Z"
+    },
+    {
+      "id": 2,
+      "baggage_id": 3,
+      "reported_by": 1,
+      "type": "DELAYED",
+      "description": "Baggage did not arrive with flight AI405 due to tight turnaround",
+      "status": "INVESTIGATING",
+      "created_at": "2026-10-22T11:24:40.250Z",
+      "updated_at": "2026-10-22T11:24:40.250Z"
+    }
+  ]
+}

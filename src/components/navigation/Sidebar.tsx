@@ -12,7 +12,8 @@ import {
   X,
   User,
   ShieldCheck,
-  Send
+  Send,
+  PackagePlus
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.tsx';
 
@@ -31,6 +32,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ role }) => {
   const staffNavItems = [
     { label: 'Dashboard', path: '/staff/dashboard', icon: LayoutDashboard },
     { label: 'Baggage', path: '/staff/dashboard#table', icon: Luggage },
+    { label: 'Add Baggage', path: '/staff/add-baggage', icon: PackagePlus },
     { label: 'Update Baggage', path: '/staff/update-baggage', icon: RotateCw },
     { label: 'Incidents', path: '/staff/incidents', icon: AlertTriangle }
   ];
@@ -40,7 +42,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ role }) => {
     { label: 'My Flights', path: '/passenger/dashboard#flights', icon: Plane },
     { label: 'My Baggage', path: '/passenger/dashboard#baggage', icon: Luggage },
     { label: 'Track Baggage', path: '/track', icon: Search },
-    { label: 'Report Issue', path: '/staff/incidents', icon: AlertTriangle }
+    { label: 'Report Issue', path: '/passenger/report-issue', icon: AlertTriangle }
   ];
 
   const navItems = isStaff ? staffNavItems : passengerNavItems;

@@ -14,26 +14,28 @@ React (TypeScript + Vite + Tailwind CSS + Lucide React)
                            │
                            ▼
           MySQL Database (baggage_tracking)
-  [users, flights, baggage, baggage_movements, incidents]
+   [users, flights, passenger_bookings, baggage, baggage_movements, incidents]
 ```
 
 * **Frontend:** React 19, TypeScript, React Router, Tailwind CSS, Lucide React icons.
 * **Backend:** Node.js, Express.js, TypeScript, bcrypt, jsonwebtoken, mysql2.
-* **Database:** MySQL relational database with ACID transactions and foreign key cascades (includes zero-configuration persistent storage fallback for instant demo environments).
+* **Database:** MySQL relational database with ACID transactions, foreign keys, and indexes (includes zero-configuration simulated relational store fallback for instant preview).
 
 ---
 
 ## 🚀 Application Routes
 
-The application features exactly 7 core routes:
+The application features 9 core routes:
 
-1. `/` — **Home:** Clean landing page with primary baggage tracking search and operational overview cards.
+1. `/` — **Home:** Landing page with dual baggage tracking search (by Tag barcode or PNR) and operational overview.
 2. `/login` — **Passenger & Staff Login:** Centered login interface with credential switching and role-based redirect.
-3. `/passenger/dashboard` — **Passenger Dashboard:** Overview of passenger flights, baggage counts, and active luggage status badges.
-4. `/track` — **Track Baggage (Main Demo Page):** Real-time status lookup, large metadata card, and comprehensive vertical tracking timeline.
-5. `/staff/dashboard` — **Staff Dashboard:** Information-dense operations overview with 5 live statistics cards, filtering, and searchable baggage table.
-6. `/staff/update-baggage` — **Update Baggage:** Staff status modification form executing database transactions to record new movements and update luggage state.
-7. `/staff/incidents` — **Incident Management:** Incident reporting form and live investigation tracking table.
+3. `/passenger/dashboard` — **Passenger Dashboard:** Overview of passenger flights, PNR booking references, and active checked baggage.
+4. `/passenger/report-issue` — **Passenger Report Issue:** Dedicated passenger form to file delayed, damaged, or missing baggage claims directly into airport operations.
+5. `/track` — **Track Baggage (Main Demo Page):** Real-time status lookup supporting both **Baggage Tag** and **PNR Booking Number** search modes with complete vertical movement timeline.
+6. `/staff/dashboard` — **Staff Dashboard:** Information-dense operations overview with 5 live statistics cards, filtering, PNR references, and searchable baggage table.
+7. `/staff/add-baggage` — **Register New Baggage:** Staff registration form to check-in new luggage with PNR association and initial movement tracking.
+8. `/staff/update-baggage` — **Update Baggage:** Staff status modification form executing database transactions to record new movements and update luggage state.
+9. `/staff/incidents` — **Incident Management:** Incident reporting form and live investigation tracking table.
 
 ---
 
@@ -49,11 +51,18 @@ CREATE DATABASE baggage_tracking;
 # Apply schema (tables, foreign keys, and indexes)
 mysql -u root -p baggage_tracking < database/schema.sql
 
-# Seed initial flights, users, baggage, and movement histories
+# Seed initial flights, users, PNR bookings, baggage, and movement histories
 mysql -u root -p baggage_tracking < database/seed.sql
 ```
 
-### 3. Configure Environment Variables
+### 3. Migrating an Existing Database to PNR Architecture
+If you have an existing `baggage_tracking` database with data you wish to preserve, run the migration script:
+```bash
+mysql -u root -p baggage_tracking < database/migration_pnr.sql
+```
+This script creates `passenger_bookings`, links existing baggage items via `booking_id`, and safely updates foreign keys without data loss.
+
+### 4. Configure Environment Variables
 Copy `.env.example` to `.env`:
 ```env
 PORT=3000
@@ -78,11 +87,11 @@ JWT_SECRET="baggagetrack_super_secret_jwt_key_2026"
 
 *(Generic aliases `passenger@baggagetrack.com` and `staff@baggagetrack.com` are also supported for quick login).*
 
-Sample baggage tags pre-seeded for testing:
-* `BG10001` (Flight AI302 — IN TRANSIT / ARRIVED)
-* `BG10002` (Flight AI302 — ARRIVED)
-* `BG10003` (Flight AI405 — DELAYED)
-* `BG10004` (Flight AI210 — CLAIMED)
+Sample demo PNRs and baggage tags:
+* **PNR `ABC123`** (Passenger: Godwin, Flight: AI302) — Linked to baggage `BG10001`, `BG10002`, `BG10005`
+* **PNR `XYZ789`** (Passenger: Godwin, Flight: AI210) — Linked to baggage `BG10004`
+* **PNR `DEL405`** (Passenger: Priya Patel, Flight: AI405) — Linked to baggage `BG10003`, `BG10006`
+* **PNR `BLR210`** (Passenger: Priya Patel, Flight: AI210) — Linked to baggage `BG10007`
 
 ---
 
@@ -90,155 +99,102 @@ Sample baggage tags pre-seeded for testing:
 
 ### 1. Authentication
 * **POST `/api/auth/login`**
-  * **Purpose:** Authenticate staff or passenger and issue JWT token.
   * **Auth:** Public
+  * **Body:** `{"email": "anu@baggagetrack.com", "password": "staff123"}`
+  * **Response:** Returns JWT token and user profile object.
+
+### 2. Baggage Registration & Management
+* **POST `/api/baggage`**
+  * **Purpose:** Register a new baggage item and create its initial movement record in a single database transaction.
+  * **Auth:** Staff Only (`STAFF` role)
   * **Body:**
     ```json
     {
-      "email": "staff@baggagetrack.com",
-      "password": "staff123"
-    }
-    ```
-  * **Response (200 OK):**
-    ```json
-    {
-      "message": "Login successful",
-      "token": "eyJhbGciOiJIUzI1NiIsIn...",
-      "user": {
-        "id": 1,
-        "name": "Airport Operations Staff",
-        "email": "staff@baggagetrack.com",
-        "role": "STAFF"
-      }
-    }
-    ```
-
-### 2. Baggage Lookup
-* **GET `/api/baggage/:tagNumber`**
-  * **Purpose:** Retrieve baggage details and linked flight information.
-  * **Auth:** Public
-  * **Response (200 OK):**
-    ```json
-    {
-      "id": 1,
-      "tag_number": "BG10001",
-      "flight_number": "AI302",
-      "origin": "Delhi Airport",
-      "destination": "Mumbai Airport",
+      "tagNumber": "BG10008",
+      "pnrNumber": "ABC123",
+      "passengerName": "Godwin",
+      "flightNumber": "AI302",
       "weight": 18.5,
-      "status": "IN TRANSIT",
-      "current_location": "Delhi Airport",
-      "passenger_name": "Rahul Sharma"
-    }
-    ```
-
-* **GET `/api/baggage/:tagNumber/movements`**
-  * **Purpose:** Retrieve chronological tracking timeline for a baggage piece.
-  * **Auth:** Public
-  * **Response (200 OK):**
-    ```json
-    [
-      {
-        "id": 1,
-        "timestamp": "08:30",
-        "status": "CHECKED IN",
-        "location": "Delhi Airport",
-        "remarks": "Checked in at Terminal 3 Counter B12"
-      },
-      {
-        "id": 2,
-        "timestamp": "08:42",
-        "status": "SECURITY",
-        "location": "Delhi Airport",
-        "remarks": "Security screening passed at Inspection Bay 4"
-      }
-    ]
-    ```
-
-### 3. Operations & Baggage Management
-* **GET `/api/baggage`**
-  * **Purpose:** Retrieve all baggage records with search and status filtering.
-  * **Auth:** Airport Staff
-  * **Query Params:** `?status=IN%20TRANSIT&search=BG10001`
-  * **Response (200 OK):** Array of baggage items.
-
-* **GET `/api/baggage/statistics`**
-  * **Purpose:** Aggregated baggage statistics calculated using SQL COUNT queries.
-  * **Auth:** Airport Staff
-  * **Response (200 OK):**
-    ```json
-    {
-      "total": 1245,
-      "inTransit": 320,
-      "delayed": 14,
-      "missing": 3,
-      "claimed": 908
-    }
-    ```
-
-* **POST `/api/baggage/:tagNumber/movements`**
-  * **Purpose:** Update baggage status and insert new movement record in one database transaction.
-  * **Auth:** Airport Staff
-  * **Body:**
-    ```json
-    {
-      "status": "ARRIVED",
-      "location": "Delhi Airport",
-      "remarks": "Baggage arrived successfully"
-    }
-    ```
-  * **Response (200 OK):**
-    ```json
-    {
-      "message": "Baggage status updated successfully.",
-      "baggage": { ... },
-      "movement": { ... }
-    }
-    ```
-
-### 4. Incident Management
-* **GET `/api/incidents`**
-  * **Purpose:** Retrieve recent baggage incidents.
-  * **Auth:** Airport Staff
-  * **Query Params:** `?status=OPEN`
-  * **Response (200 OK):** Array of incidents.
-
-* **POST `/api/incidents`**
-  * **Purpose:** Log a new baggage incident.
-  * **Auth:** Airport Staff
-  * **Body:**
-    ```json
-    {
-      "baggageTag": "BG10001",
-      "type": "DAMAGED BAGGAGE",
-      "description": "Minor damage reported"
+      "status": "CHECKED IN",
+      "currentLocation": "Delhi Airport - Terminal 3",
+      "remarks": "Registered at baggage check-in counter"
     }
     ```
   * **Response (201 Created):**
     ```json
     {
-      "message": "Incident reported successfully.",
-      "incident": { ... }
+      "message": "Baggage registered successfully.",
+      "tagNumber": "BG10008",
+      "pnrNumber": "ABC123",
+      "baggage": { ... }
     }
     ```
 
+* **GET `/api/baggage`**
+  * **Purpose:** Retrieve all baggage records with search and status filtering.
+  * **Auth:** Staff Only
+  * **Query Params:** `?status=IN%20TRANSIT&search=BG10001`
+
+* **GET `/api/baggage/statistics`**
+  * **Purpose:** Live non-hardcoded counts of Total, In Transit, Delayed, Missing, and Claimed bags.
+  * **Auth:** Staff Only
+
+* **POST `/api/baggage/:tagNumber/movements`**
+  * **Purpose:** Update baggage status and append a new milestone in a single transaction.
+  * **Auth:** Staff Only
+
+### 3. PNR Bookings & Flight Itineraries
+* **GET `/api/bookings/:pnrNumber/baggage`**
+  * **Purpose:** Retrieve all baggage items linked to a booking reference along with passenger and flight details.
+  * **Auth:** Public
+  * **Response (200 OK):**
+    ```json
+    {
+      "pnr_number": "ABC123",
+      "booking_id": 1,
+      "passenger_name": "Godwin",
+      "flight_number": "AI302",
+      "origin": "Delhi Airport",
+      "destination": "Mumbai Airport",
+      "baggage": [
+        { "tag_number": "BG10001", "weight": 18.5, "status": "IN TRANSIT", ... },
+        { "tag_number": "BG10002", "weight": 21.2, "status": "ARRIVED", ... }
+      ]
+    }
+    ```
+
+* **GET `/api/flights`**
+  * **Purpose:** Retrieve active airline flights for dropdown selection during baggage registration.
+  * **Auth:** Public / Authenticated
+
+### 4. Baggage Tracking & Public Lookup
+* **GET `/api/baggage/:tagNumber`**
+  * **Purpose:** Retrieve single baggage record with PNR reference and flight details.
+  * **Auth:** Public
+
+* **GET `/api/baggage/:tagNumber/movements`**
+  * **Purpose:** Retrieve full chronological tracking milestones for a baggage tag.
+  * **Auth:** Public
+
 ### 5. Passenger Dashboard
 * **GET `/api/passenger/dashboard`**
-  * **Purpose:** Retrieve passenger profile, flight itineraries, and linked baggage.
-  * **Auth:** Passenger
-  * **Response (200 OK):** Passenger dashboard payload.
+  * **Purpose:** Retrieve live flights, bookings, and baggage for the authenticated passenger.
+  * **Auth:** Passenger (`PASSENGER` role)
 
 ---
 
-## 🎯 Final Demonstration Workflow
+## 🎯 Key User Workflows
 
-1. Open **Home** (`/`).
-2. Enter tag `BG10001` and click **TRACK**.
-3. View baggage information card and vertical movement timeline.
-4. Click **Login** (`/login`) and authenticate as **Staff** (`staff@baggagetrack.com` / `staff123`).
-5. In **Staff Dashboard**, inspect live operational statistics and table.
-6. Navigate to **Update Baggage** (`/staff/update-baggage`).
-7. Enter `BG10001`, select status `ARRIVED`, enter remarks, click **UPDATE**.
-8. Notice database transaction confirmation.
-9. Return to **Track Baggage** (`/track?tag=BG10001`) to see status is now `ARRIVED` and the new movement is appended to the timeline.
-10. Navigate to **Incident Management** (`/staff/incidents`) and report an incident; refresh the browser and verify the incident persists.
+### Staff Baggage Registration Workflow
+1. Log in as staff using Anu (`anu@baggagetrack.com` / `staff123`).
+2. Click **Add Baggage** in the sidebar or from the Staff Dashboard header.
+3. Enter Tag Number (e.g. `BG10012`), PNR (e.g. `ABC123`), select Flight, enter Weight, and click **REGISTER BAGGAGE**.
+4. The system validates the input, ensures tag uniqueness, attaches the luggage to the PNR booking, records the initial movement milestone in a transaction, and displays a success notification with direct actions.
+5. Click **View in Track Baggage** to immediately inspect the live tracking timeline for the new luggage piece.
+
+### PNR-Based Passenger Tracking Workflow
+1. Open Track Baggage (`/track`).
+2. Toggle to **By PNR Booking**.
+3. Enter PNR `ABC123` (or click one of the demo chips).
+4. View the booking summary, flight itinerary, and all bags under that PNR.
+5. Click any individual baggage card to inspect its full vertical milestone journey.
